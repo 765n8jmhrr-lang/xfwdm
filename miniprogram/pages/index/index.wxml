@@ -1,0 +1,104 @@
+<!--pages/index/index.wxml - 首页：上传服装和模特-->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">AI一键换装</text>
+    <text class="subtitle">上传服装和模特照片，AI智能生成换装效果</text>
+  </view>
+
+  <!-- 服装上传区域 -->
+  <view class="upload-section">
+    <view class="section-title">
+      <text class="icon">👗</text>
+      <text class="label">选择服装</text>
+      <text class="tip">支持上衣、裤子、裙子、套装</text>
+    </view>
+    <view class="upload-area" bindtap="chooseGarment">
+      <block wx:if="{{garmentImage}}">
+        <image class="preview-image" src="{{garmentImage}}" mode="aspectFit" />
+        <view class="re-upload-btn">重新选择</view>
+      </block>
+      <block wx:else>
+        <view class="upload-placeholder">
+          <image class="upload-icon" src="/images/icon-camera.png" mode="aspectFit" />
+          <text class="upload-text">拍照/从相册选择服装图片</text>
+          <text class="upload-hint">建议上传平铺或挂拍的服装图</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 模特上传区域 -->
+  <view class="upload-section">
+    <view class="section-title">
+      <text class="icon">🧍</text>
+      <text class="label">选择模特</text>
+      <text class="tip">支持真人照片或AI模特</text>
+    </view>
+    <view class="upload-area" bindtap="chooseModel">
+      <block wx:if="{{modelImage}}">
+        <image class="preview-image" src="{{modelImage}}" mode="aspectFit" />
+        <view class="re-upload-btn">重新选择</view>
+      </block>
+      <block wx:else>
+        <view class="upload-placeholder">
+          <image class="upload-icon" src="/images/icon-person.png" mode="aspectFit" />
+          <text class="upload-text">拍照/从相册选择模特图片</text>
+          <text class="upload-hint">建议上传正面站立、姿势自然的照片</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 预设模特快捷选择 -->
+    <view class="preset-models" wx:if="{{!modelImage}}">
+      <text class="preset-title">或选择预设模特：</text>
+      <scroll-view scroll-x class="preset-scroll">
+        <view class="preset-item" wx:for="{{presetModels}}" wx:key="id" bindtap="selectPresetModel" data-index="{{index}}">
+          <image class="preset-avatar" src="{{item.image}}" mode="aspectFill" />
+          <text class="preset-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 换装类型选择 -->
+  <view class="category-section" wx:if="{{garmentImage && modelImage}}">
+    <view class="section-title">
+      <text class="icon">⚙️</text>
+      <text class="label">换装部位</text>
+    </view>
+    <view class="category-options">
+      <view class="category-item {{category === 'upper_body' ? 'active' : ''}}" bindtap="selectCategory" data-value="upper_body">
+        <text>上装</text>
+      </view>
+      <view class="category-item {{category === 'lower_body' ? 'active' : ''}}" bindtap="selectCategory" data-value="lower_body">
+        <text>下装</text>
+      </view>
+      <view class="category-item {{category === 'full_body' ? 'active' : ''}}" bindtap="selectCategory" data-value="full_body">
+        <text>全身</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 开始换装按钮 -->
+  <view class="action-area">
+    <button class="btn-primary start-btn {{(!garmentImage || !modelImage) ? 'disabled' : ''}}" bindtap="startTryOn" disabled="{{!garmentImage || !modelImage}}">
+      开始AI换装
+    </button>
+    <view class="credits-info">
+      <text>剩余换装次数：{{remainingCredits}}次</text>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view class="loading-mask" wx:if="{{isProcessing}}">
+    <view class="loading-box">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">AI正在换装中...</text>
+      <text class="loading-tip">预计需要{{estimatedTime}}秒</text>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progress}}%"></view>
+      </view>
+    </view>
+  </view>
+</view>

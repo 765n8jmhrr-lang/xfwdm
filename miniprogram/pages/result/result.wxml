@@ -1,0 +1,55 @@
+<!--pages/result/result.wxml - 换装结果页-->
+<view class="container">
+  <!-- 对比区域 -->
+  <view class="compare-section">
+    <view class="compare-header">
+      <text class="compare-title">换装效果对比</text>
+    </view>
+
+    <!-- 切换模式 -->
+    <view class="view-mode">
+      <view class="mode-item {{viewMode === 'compare' ? 'active' : ''}}" bindtap="switchMode" data-mode="compare">对比</view>
+      <view class="mode-item {{viewMode === 'result' ? 'active' : ''}}" bindtap="switchMode" data-mode="result">大图</view>
+    </view>
+
+    <!-- 对比视图 -->
+    <view class="compare-view" wx:if="{{viewMode === 'compare'}}">
+      <view class="compare-item">
+        <text class="compare-label">原图（模特）</text>
+        <image class="compare-image" src="{{modelImage}}" mode="aspectFit" bindtap="previewImage" data-url="{{modelImage}}" />
+      </view>
+      <view class="compare-arrow">→</view>
+      <view class="compare-item">
+        <text class="compare-label">换装效果</text>
+        <image class="compare-image" src="{{resultImage}}" mode="aspectFit" bindtap="previewImage" data-url="{{resultImage}}" />
+      </view>
+    </view>
+
+    <!-- 大图视图 -->
+    <view class="result-view" wx:if="{{viewMode === 'result'}}">
+      <image class="result-full-image" src="{{resultImage}}" mode="widthFix" bindtap="previewImage" data-url="{{resultImage}}" />
+    </view>
+  </view>
+
+  <!-- 服装信息 -->
+  <view class="garment-info card">
+    <view class="info-row">
+      <image class="garment-thumb" src="{{garmentImage}}" mode="aspectFit" />
+      <view class="info-text">
+        <text class="info-label">使用的服装</text>
+        <text class="info-time">{{createTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn-primary save-btn" bindtap="saveToAlbum">
+      保存到相册
+    </button>
+    <view class="sub-actions">
+      <button class="btn-secondary" bindtap="shareResult">分享</button>
+      <button class="btn-secondary" bindtap="tryAgain">再试一次</button>
+    </view>
+  </view>
+</view>

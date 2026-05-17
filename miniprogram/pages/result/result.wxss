@@ -1,0 +1,143 @@
+/* 结果页样式 */
+.compare-section {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.compare-header {
+  margin-bottom: 20rpx;
+}
+
+.compare-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.view-mode {
+  display: flex;
+  background: #F5F7FA;
+  border-radius: 10rpx;
+  padding: 4rpx;
+  margin-bottom: 24rpx;
+}
+
+.mode-item {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.mode-item.active {
+  background: #fff;
+  color: #4A90D9;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 对比视图 */
+.compare-view {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.compare-item {
+  flex: 1;
+  text-align: center;
+}
+
+.compare-label {
+  display: block;
+  font-size: 22rpx;
+  color: #888;
+  margin-bottom: 12rpx;
+}
+
+.compare-image {
+  width: 100%;
+  height: 380rpx;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+}
+
+.compare-arrow {
+  font-size: 40rpx;
+  color: #4A90D9;
+  font-weight: bold;
+  padding: 0 8rpx;
+}
+
+/* 大图视图 */
+.result-view {
+  text-align: center;
+}
+
+.result-full-image {
+  width: 100%;
+  border-radius: 12rpx;
+}
+
+/* 服装信息 */
+.garment-info {
+  margin-bottom: 24rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.garment-thumb {
+  width: 100rpx;
+  height: 120rpx;
+  border-radius: 10rpx;
+  margin-right: 24rpx;
+  background: #f5f5f5;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.info-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  padding: 20rpx 0;
+}
+
+.save-btn {
+  width: 100%;
+  height: 92rpx;
+  line-height: 92rpx;
+  font-size: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.sub-actions {
+  display: flex;
+  gap: 24rpx;
+}
+
+.sub-actions .btn-secondary {
+  flex: 1;
+}

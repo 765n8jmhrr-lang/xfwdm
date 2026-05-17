@@ -1,0 +1,39 @@
+<!--pages/history/history.wxml - 历史记录页-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">换装记录</text>
+    <text class="clear-btn" bindtap="clearAll" wx:if="{{!isEmpty}}">清空</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{isEmpty}}">
+    <image class="empty-icon" src="/images/icon-empty.png" mode="aspectFit" />
+    <text class="empty-text">暂无换装记录</text>
+    <text class="empty-hint">快去首页试试AI换装吧</text>
+  </view>
+
+  <!-- 历史列表 -->
+  <view class="history-list" wx:if="{{!isEmpty}}">
+    <view class="history-item" wx:for="{{historyList}}" wx:key="taskId">
+      <!-- 图片预览 -->
+      <view class="item-images">
+        <image class="item-thumb" src="{{item.garmentImage}}" mode="aspectFill" bindtap="previewImage" data-url="{{item.garmentImage}}" />
+        <text class="item-arrow">→</text>
+        <image class="item-thumb" src="{{item.resultImage}}" mode="aspectFill" bindtap="previewImage" data-url="{{item.resultImage}}" />
+      </view>
+      
+      <!-- 信息 -->
+      <view class="item-info">
+        <text class="item-time">{{item.createTime}}</text>
+        <text class="item-status">已完成</text>
+      </view>
+      
+      <!-- 操作 -->
+      <view class="item-actions">
+        <view class="action-view" bindtap="viewDetail" data-index="{{index}}">查看</view>
+        <view class="action-delete" bindtap="deleteRecord" data-index="{{index}}">删除</view>
+      </view>
+    </view>
+  </view>
+</view>
