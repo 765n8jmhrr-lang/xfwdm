@@ -1,0 +1,134 @@
+# ========================
+# 拍版宝 完整服务编排
+# ========================
+version: '3.8'
+
+services:
+  # ===== Node.js API 服务 =====
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: paibanbao-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=paibanbao
+      - DB_USER=paibanbao
+      - DB_PASSWORD=${DB_PASSWORD:-paibanbao123}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-change_this_in_production}
+      - WX_APPID=${WX_APPID}
+      - WX_SECRET=${WX_SECRET}
+      - OSS_REGION=${OSS_REGION}
+      - OSS_ACCESS_KEY_ID=${OSS_ACCESS_KEY_ID}
+      - OSS_ACCESS_KEY_SECRET=${OSS_ACCESS_KEY_SECRET}
+      - OSS_BUCKET=${OSS_BUCKET}
+      - OSS_CDN_DOMAIN=${OSS_CDN_DOMAIN}
+      - AI_WORKER_URL=http://ai-worker:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - paibanbao-net
+
+  # ===== AI Worker 服务 (Python) =====
+  ai-worker:
+    build:
+      context: ./ai-worker
+      dockerfile: Dockerfile
+    container_name: paibanbao-ai-worker
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/models
+      - DEVICE=cuda
+      - OSS_REGION=${OSS_REGION}
+      - OSS_ACCESS_KEY_ID=${OSS_ACCESS_KEY_ID}
+      - OSS_ACCESS_KEY_SECRET=${OSS_ACCESS_KEY_SECRET}
+      - OSS_BUCKET=${OSS_BUCKET}
+    volumes:
+      - ai-models:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - paibanbao-net
+
+  # ===== MySQL 数据库 =====
+  mysql:
+    image: mysql:8.0
+    container_name: paibanbao-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root123}
+      - MYSQL_DATABASE=paibanbao
+      - MYSQL_USER=paibanbao
+      - MYSQL_PASSWORD=${DB_PASSWORD:-paibanbao123}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - paibanbao-net
+
+  # ===== Redis =====
+  redis:
+    image: redis:7-alpine
+    container_name: paibanbao-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - paibanbao-net
+
+  # ===== Nginx 反向代理 =====
+  nginx:
+    image: nginx:alpine
+    container_name: paibanbao-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - api
+    networks:
+      - paibanbao-net
+
+volumes:
+  mysql-data:
+  redis-data:
+  ai-models:
+
+networks:
+  paibanbao-net:
+    driver: bridge
